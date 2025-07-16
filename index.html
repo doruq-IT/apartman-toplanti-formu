@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apartman Toplantısı Katılım Formu</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="form-card">
+            <h2>📅 Apartman Toplantısına Davetlisiniz!</h2>
+            <p>Lütfen 22 Temmuz 2025 tarihli toplantıya katılım durumunuzu bildiriniz.</p>
+
+            <form id="rsvp-form">
+                <div class="input-group">
+                    <input type="text" id="adSoyad" name="adSoyad" required>
+                    <label for="adSoyad">Ad Soyad</label>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="daireNo" name="daireNo" required>
+                    <label for="daireNo">Daire No</label>
+                </div>
+                
+                <label class="radio-title">Katılım Durumu</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="katilim" value="Katılıyorum" required>
+                        <span class="radio-custom"></span>
+                        Katılıyorum
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="katilim" value="Katılamıyorum">
+                        <span class="radio-custom"></span>
+                        Katılamıyorum
+                    </label>
+                </div>
+
+                <div id="notlar" class="notlar-container">
+                    <label for="ekNot">Toplantıda dile getirilmesini istediğiniz konular:</label>
+                    <textarea id="ekNot" name="ekNot" placeholder="Varsa, belirtiniz..."></textarea>
+                </div>
+
+                <button type="submit">Yanıtımı Gönder</button>
+            </form>
+
+            <div id="tesekkur" class="hidden">
+                <h3>✓ Teşekkürler!</h3>
+                <p>Yanıtınız başarıyla kaydedildi. İyi günler dileriz.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
