@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // --- Google Apps Script URL'iniz ---
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxHESS-Lv0LqBouvJ69hkt87eSSqF6ZD_qPaNrb9aTaqi293AdIKftKPkgUWFY1apNY/exec';
+
     const form = document.getElementById("rsvp-form");
-    const formCard = document.querySelector(".form-card");
+    const submitButton = form.querySelector("button[type='submit']");
     const katilimRadios = document.querySelectorAll("input[name='katilim']");
     const notlarDiv = document.getElementById("notlar");
     const tesekkurDiv = document.getElementById("tesekkur");
@@ -16,28 +19,39 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Form gönderildiğinde pürüzsüz geçiş yap
+    // Form gönderildiğinde verileri Google Sheets'e gönder
     form.addEventListener("submit", function (e) {
-        e.preventDefault();
+        e.preventDefault(); // Sayfanın yeniden yüklenmesini engelle
 
-        // Form verilerini al (bu kısım aynı)
-        const adSoyad = document.getElementById("adSoyad").value;
-        const daireNo = document.getElementById("daireNo").value;
-        const katilim = document.querySelector("input[name='katilim']:checked").value;
-        const ekNot = document.getElementById("ekNot").value;
-        
-        console.log("Form gönderildi:", { adSoyad, daireNo, katilim, ekNot });
+        // Kullanıcının birden çok kez tıklamasını önlemek için butonu devre dışı bırak
+        submitButton.disabled = true;
+        submitButton.textContent = 'Gönderiliyor...';
 
-        // Formu yavaşça gizle
-        form.classList.add("fade-out");
+        // fetch API'si ile form verilerini Google Apps Script'e gönder
+        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+            .then(response => {
+                console.log('Success!', response);
+                
+                // Gönderim başarılıysa, formu gizle ve teşekkür mesajını göster
+                form.classList.add("fade-out");
+                form.addEventListener("transitionend", function handler() {
+                    form.removeEventListener("transitionend", handler);
+                    form.classList.add("hidden");
+                    tesekkurDiv.classList.remove("hidden");
+                }, { once: true });
 
-        // CSS geçiş animasyonu bittiğinde teşekkür mesajını göster
-        form.addEventListener("transitionend", function handler() {
-            // Event listener'ı tekrar tetiklenmemesi için kaldır
-            form.removeEventListener("transitionend", handler);
-            
-            form.classList.add("hidden"); // display: none yap
-            tesekkurDiv.classList.remove("hidden"); // teşekkür mesajını görünür yap
-        }, { once: true }); // Olayın sadece bir kez çalışmasını sağlar
+                // Formu sıfırlayarak tarayıcı geri geldiğinde boş olmasını sağla
+                form.reset();
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                
+                // Hata durumunda kullanıcıyı bilgilendir
+                alert('Hata: Form gönderilemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.');
+
+                // Kullanıcının tekrar deneyebilmesi için butonu tekrar aktif et
+                submitButton.disabled = false;
+                submitButton.textContent = 'Yanıtımı Gönder';
+            });
     });
 });
